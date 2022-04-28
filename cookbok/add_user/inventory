@@ -1,0 +1,46 @@
+ansibleserver ansible_connection=local
+
+# omit ansible_ssh_private_key_file if your ssh pk files resid in default users home directory.
+
+ansible_server      ansible_host=<your_ansible_server_ip>       ansible_user=ec2-user   ansible_ssh_private_key_file=~/keypairs/ansible-server-keypair.pem
+jenkins_server      ansible_host=<your_jenkins_server_ip>       ansible_user=ec2-user   ansible_ssh_private_key_file=~/keypairs/jenkins-server-keypair.pem
+postgres_server     ansible_host=<your_postgres_server_ip>      ansible_user=ec2-user   ansible_ssh_private_key_file=~/keypairs/postgres-server-keypair.pem
+nginx_server        ansible_host=<your_nginx_server_ip>         ansible_user=ec2-user   ansible_ssh_private_key_file=~/keypairs/nginx-server-keypair.pem
+k8s_master_server   ansible_host=<your_k8s_master_server_ip>    ansible_user=ec2-user   ansible_ssh_private_key_file=~/keypairs/k8s-master-server-keypair.pem
+k8s_worker01_server ansible_host=<your_k8s_worker01_server_ip>  ansible_user=ec2-user   ansible_ssh_private_key_file=~/keypairs/k8s-worker-server-keypair.pem
+k8s_worker02_server ansible_host=<your_k8s_worker02_server_ip>  ansible_user=ec2-user   ansible_ssh_private_key_file=~/keypairs/k8s-worker-server-keypair.pem
+k8s_worker03_server ansible_host=<your_k8s_worker03_server_ip>  ansible_user=ec2-user   ansible_ssh_private_key_file=~/keypairs/k8s-worker-server-keypair.pem
+
+[ansible-server]
+ansible_server
+
+[jenkins-server]
+jenkins_server
+
+[postgres-server]
+postgres_server
+
+[nginx-server]
+nginx_server
+
+[k8s-cluster]
+k8s_master_server
+k8s_worker01_server
+k8s_worker02_server
+k8s_worker03_server
+
+[k8s-master-group]
+k8s_master_server
+
+[k8s-worker-group]
+k8s_worker01_server
+k8s_worker02_server
+k8s_worker03_server
+
+[ec2-instance-group:children]
+ansible-server
+jenkins-server
+postgres-server
+nginx-server
+k8s-master-group
+k8s-worker-group
