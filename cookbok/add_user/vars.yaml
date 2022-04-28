@@ -1,0 +1,7 @@
+users:
+  - name: ansible-user
+    sudoer: yes
+    password: CHANGEME
+    create_home: yes
+
+ssh_public_key: ~/.ssh/ansible-server.pub
