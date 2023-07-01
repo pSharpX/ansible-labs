@@ -1,0 +1,42 @@
+---
+- name: NGINX Setup
+  hosts: worker
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Add NGINX repository
+      yum_repository:
+        name: nginx-repo
+        description: NGINX YUM repo
+        baseurl: http://nginx.org/packages/mainline/centos/7/$basearch/
+        gpgcheck: no
+        enabled: yes
+      when: ansible_distribution == "CentOS"
+
+    - name: NGINX Installation
+      yum:
+        name: nginx
+        state: latest
+      when: ansible_distribution == "CentOS"
+    
+    - name: Enable Firewalld Service
+      service:
+        name: firewalld
+        state: started
+
+    - name: Open Firewall for NGINX
+      firewalld:
+        service: "{{ item }}"
+        permanent: yes
+        state: enabled
+        immediate: yes
+      loop: "{{ firewall_services }}"
+      notify: restart_nginx_service
+      
+
+  handlers:
+    - name: restart_nginx_service
+      service:
+        name: nginx
+        state: restarted
+        enabled: yes
